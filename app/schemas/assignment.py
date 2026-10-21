@@ -2,14 +2,14 @@
 
 from datetime import date
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class AssignmentCreate(BaseModel):
     patient_id: int
     exercise_id: int
     due_date: date | None = None
-    times_per_week: int
+    times_per_week: int = Field(ge=1)
 
 
 class AssignmentIdResponse(BaseModel):

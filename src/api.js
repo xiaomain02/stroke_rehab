@@ -44,12 +44,18 @@ const doctorsDb = [
   { id: 2, full_name: 'Белов Сергей Николаевич', email: 'belov@clinic.ru', is_active: true, created_at: day(10) },
 ]
 const mock = {
-  'POST /auth/login': (e) => { localStorage.setItem('mock_email', e); return { access_token: 'mock' } },
+  'POST /auth/login': (e) => {
+    localStorage.setItem('mock_email', e)
+    localStorage.setItem('mock_role', e.startsWith('admin') ? 'admin' : (e.startsWith('patient') ? 'patient' : 'doctor'))
+    return { access_token: 'mock' }
+  },
+  'POST /auth/register': (d) => { localStorage.setItem('mock_email', d.email); localStorage.setItem('mock_role', d.role); return { access_token: 'mock' } },
   // тестовые входы: admin@... -> администратор, new@... -> врач с обязательной сменой пароля, любой другой -> врач
   'GET /me': () => {
     const e = localStorage.getItem('mock_email') || ''
     const admin = e.startsWith('admin')
-    return { id: 100, full_name: admin ? 'Администратор больницы' : 'Доктор Орлова', role: admin ? 'admin' : 'doctor',
+    const role = admin ? 'admin' : (localStorage.getItem('mock_role') || (e.startsWith('patient') ? 'patient' : 'doctor'))
+    return { id: 100, full_name: admin ? 'Администратор больницы' : (role === 'patient' ? 'Пациент' : 'Доктор Орлова'), role,
       must_change_password: e.startsWith('new') && !localStorage.getItem('mock_changed') }
   },
   'POST /auth/change-password': () => { localStorage.setItem('mock_changed', '1'); return { ok: true } },
@@ -60,32 +66,46 @@ const mock = {
   'PATCH /admin/doctors': (d) => { const x = doctorsDb.find((y) => y.id === d.id); if (x) x.is_active = d.is_active; return { ok: true } },
   'POST /admin/doctors/reset': () => ({ temp_password: pw() }),
   'GET /doctor/patients': () => patients,
+  'GET /patient/assignments': () => [{ id: 1, exercise: { ...exercises[0] }, status: 'new', due_date: null, times_per_week: 3, done_this_week: 0 }],
   'GET /exercises': () => exercises,
   'POST /doctor/assignments': () => ({ ok: true }),
   'POST /doctor/exercises/video': () => ({ video_url: '' }),
+  'POST /results': () => ({ id: Date.now() }),
+  'POST /results/media': ({ file }) => ({ media_url: '', media_type: file?.type?.startsWith('audio/') ? 'audio' : 'video' }),
   'GET /patients/results': () => results,
   'GET /patients/stats': () => ({ avg_score: 66, trend: 8, sessions_total: 12, completion_rate: 85 }),
   'GET /patients/diary': () => [
     { id: 1, date: day(0), mood: 4, fatigue: 2, note: 'Спала хорошо, упражнения давались легче.' },
     { id: 2, date: day(1), mood: 3, fatigue: 4, note: 'Устала к вечеру, рука дрожала.' },
   ],
+  'POST /diary': () => ({ id: Date.now() }),
+  'GET /diary': () => [],
 }
 function call(key, fn, arg) { return MOCK ? wait(mock[key](arg)) : fn() }
 
 // ---------- методы ----------
 export const api = {
   login: (email, password) => call('POST /auth/login', () => request('/auth/login', { method: 'POST', body: { email, password } }), email),
+  register: (data) => call('POST /auth/register', () => request('/auth/register', { method: 'POST', body: data }), data),
   me: () => call('GET /me', () => request('/me')),
   patients: () => call('GET /doctor/patients', () => request('/doctor/patients')),
   exercises: () => call('GET /exercises', () => request('/exercises')),
   assign: (data) => call('POST /doctor/assignments', () => request('/doctor/assignments', { method: 'POST', body: data })),
+  patientAssignments: () => call('GET /patient/assignments', () => request('/patient/assignments')),
   uploadVideo: (exerciseId, file) => call('POST /doctor/exercises/video', () => {
     const form = new FormData(); form.append('file', file)
     return request(`/doctor/exercises/${exerciseId}/video`, { method: 'POST', form })
   }),
   results: (id) => call('GET /patients/results', () => request(`/patients/${id}/results`)),
+  submitResult: (data) => call('POST /results', () => request('/results', { method: 'POST', body: data })),
+  uploadResultMedia: (resultId, file) => call('POST /results/media', () => {
+    const form = new FormData(); form.append('file', file)
+    return request(`/results/${resultId}/media`, { method: 'POST', form })
+  }, { resultId, file }),
   stats: (id) => call('GET /patients/stats', () => request(`/patients/${id}/stats`)),
   diary: (id) => call('GET /patients/diary', () => request(`/patients/${id}/diary`)),
+  ownDiary: () => call('GET /diary', () => request('/diary')),
+  createDiaryEntry: (data) => call('POST /diary', () => request('/diary', { method: 'POST', body: data })),
   changePassword: (old_password, new_password) => call('POST /auth/change-password', () => request('/auth/change-password', { method: 'POST', body: { old_password, new_password } })),
   createPatient: (data) => call('POST /doctor/patients', () => request('/doctor/patients', { method: 'POST', body: data }), data),
   resetPatientPassword: (id) => call('POST /doctor/patients/reset', () => request(`/doctor/patients/${id}/reset-password`, { method: 'POST' })),

@@ -9,8 +9,8 @@ from pydantic import BaseModel, Field
 class ResultCreate(BaseModel):
     assignment_id: int
     score: float = Field(ge=0, le=100)
-    duration_sec: int
-    errors: int
+    duration_sec: int = Field(ge=0)
+    errors: int = Field(ge=0)
     details: dict[str, Any] | None = None
 
 
