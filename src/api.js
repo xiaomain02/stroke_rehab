@@ -1,4 +1,5 @@
-// API-клиент по контракту. VITE_MOCK=true -> данные-заглушки без бэкенда.
+
+ // API-клиент по контракту. VITE_MOCK=true -> данные-заглушки без бэкенда.
 const BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 const MOCK = import.meta.env.VITE_MOCK === 'true'
 
@@ -45,13 +46,29 @@ const doctorsDb = [
 ]
 const mock = {
   'POST /auth/login': (e) => { localStorage.setItem('mock_email', e); return { access_token: 'mock' } },
-  // тестовые входы: admin@... -> администратор, new@... -> врач с обязательной сменой пароля, любой другой -> врач
+
+  // Тестовые входы:
+  // admin@... -> администратор
+  // patient@... -> пациент
+  // new@... -> врач с обязательной сменой пароля
+  // любой другой -> врач
   'GET /me': () => {
     const e = localStorage.getItem('mock_email') || ''
     const admin = e.startsWith('admin')
-    return { id: 100, full_name: admin ? 'Администратор больницы' : 'Доктор Орлова', role: admin ? 'admin' : 'doctor',
-      must_change_password: e.startsWith('new') && !localStorage.getItem('mock_changed') }
+    const patient = e.startsWith('patient')
+
+    return {
+      id: patient ? 1 : 100,
+      full_name: admin
+        ? 'Администратор больницы'
+        : patient
+          ? 'Иванова Мария Петровна'
+          : 'Доктор Орлова',
+      role: admin ? 'admin' : patient ? 'patient' : 'doctor',
+      must_change_password: e.startsWith('new') && !localStorage.getItem('mock_changed')
+    }
   },
+
   'POST /auth/change-password': () => { localStorage.setItem('mock_changed', '1'); return { ok: true } },
   'POST /doctor/patients': (d) => ({ id: 99, email: d.email, temp_password: pw() }),
   'POST /doctor/patients/reset': () => ({ temp_password: pw() }),

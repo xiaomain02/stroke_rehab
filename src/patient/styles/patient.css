@@ -1,0 +1,769 @@
+
+/* Общие стили кабинета пациента */
+
+.patient-dashboard {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 36px clamp(20px, 4vw, 48px) 64px;
+  color: var(--text, #26362c);
+  font: 17px/1.55 Figtree, system-ui, sans-serif;
+  min-width: 0;
+}
+
+.patient-dashboard *,
+.patient-dashboard *::before,
+.patient-dashboard *::after {
+  box-sizing: border-box;
+}
+
+.patient-dashboard h1,
+.patient-dashboard h2,
+.patient-dashboard h3 {
+  font-family: Literata, Georgia, serif;
+  font-weight: 600;
+  color: var(--sage-dark, #2f4a3a);
+  line-height: 1.25;
+  margin: 0 0 0.65rem;
+}
+
+.patient-dashboard h1 {
+  font-size: clamp(1.65rem, 3vw, 1.9rem);
+}
+
+.patient-dashboard h2 {
+  font-size: 1.3rem;
+}
+
+.patient-dashboard h3 {
+  font-size: 1.05rem;
+}
+
+.patient-dashboard p {
+  margin: 0 0 0.9rem;
+}
+
+.patient-dashboard a {
+  color: var(--sage-dark, #2f4a3a);
+}
+
+.patient-dashboard :focus-visible {
+  outline: 3px solid var(--teal, #5f9c9a);
+  outline-offset: 3px;
+}
+
+/* Личный кабинет */
+
+.patient-header {
+  margin-bottom: 24px;
+}
+
+.patient-header p {
+  max-width: 720px;
+  color: var(--muted, #64756a);
+}
+
+.patient-progress,
+.patient-chart-section,
+.patient-video-section,
+.speech-task,
+.memory-game,
+.diary-form,
+.target-result {
+  background: var(--surface, #fff);
+  border: 1px solid var(--line, #d3e0d3);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.patient-progress {
+  margin-bottom: 28px;
+}
+
+.patient-progress progress {
+  display: block;
+  width: 100%;
+  height: 18px;
+  margin: 12px 0;
+  accent-color: var(--sage, #5b8a68);
+}
+
+.patient-exercises {
+  display: block;
+  margin-top: 28px;
+  min-width: 0;
+}
+
+.patient-dashboard .patient-exercises-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.patient-dashboard .patient-exercise-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  padding: 20px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--line, #d3e0d3);
+  border-radius: 16px;
+}
+
+.patient-exercise-card h3,
+.patient-exercise-card p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.patient-exercise-card h3 {
+  font-size: 1.15rem;
+}
+
+.patient-exercise-card p {
+  font-size: 1rem;
+}
+
+.patient-category,
+.patient-status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.patient-category {
+  color: var(--sage-dark, #2f4a3a);
+  background: var(--mist, #e0ebe0);
+}
+
+.status-new {
+  color: var(--sage-dark, #2f4a3a);
+  background: var(--mist, #e0ebe0);
+}
+
+.status-in_progress {
+  color: #715c2b;
+  background: #f1ebd6;
+}
+
+.status-done {
+  color: #356b46;
+  background: #dceee0;
+}
+
+.status-overdue {
+  color: #8d3b2b;
+  background: #f5e1d8;
+}
+
+/* Кнопки и навигация */
+
+.patient-dashboard .patient-button,
+.patient-dashboard .patient-menu button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 12px 20px;
+  background: var(--sage, #5b8a68);
+  color: #fff;
+  border: 0;
+  border-radius: 12px;
+  font: 600 1rem/1.3 Figtree, system-ui, sans-serif;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.patient-dashboard .patient-button:hover:not(:disabled),
+.patient-dashboard .patient-menu button:hover:not(:disabled) {
+  background: var(--sage-dark, #2f4a3a);
+  color: #fff;
+}
+
+.patient-dashboard .patient-button:disabled,
+.patient-dashboard .patient-menu button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.patient-dashboard .patient-exercise-card > .patient-button {
+  width: 100%;
+  margin-top: auto;
+}
+
+.patient-back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  margin-bottom: 22px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.patient-back:hover {
+  background: var(--mist, #e0ebe0);
+}
+
+/* Отдельные кнопки дневника и прогресса */
+
+.patient-dashboard .patient-menu {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 14px;
+  margin: 28px 0 0;
+  padding: 22px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--line, #d3e0d3);
+  border-radius: 16px;
+  min-width: 0;
+}
+
+.patient-dashboard .patient-menu h2 {
+  grid-column: 1 / -1;
+  margin: 0 0 4px;
+}
+
+.patient-dashboard .patient-menu > .patient-button {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+
+/* Общие элементы упражнений */
+
+.target-levels,
+.speech-levels,
+.memory-levels,
+.pairs-levels,
+.memory-result,
+.patient-video-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.target-levels .patient-button,
+.speech-levels .patient-button,
+.memory-levels .patient-button,
+.pairs-levels .patient-button,
+.memory-result .patient-button,
+.patient-video-controls .patient-button {
+  width: auto;
+}
+
+.target-result {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  background: #eef5ea;
+}
+
+.target-result p {
+  margin: 0;
+}
+
+.target-result .patient-button {
+  width: auto;
+}
+
+/* Упражнение: попадание в цели */
+
+.target-area {
+  position: relative;
+  width: 100%;
+  height: 450px;
+  overflow: hidden;
+  background: var(--bg, #f2f6f1);
+  border: 2px solid var(--line, #d3e0d3);
+  border-radius: 16px;
+}
+
+.patient-dashboard .target-circle {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: var(--sage, #5b8a68);
+  cursor: pointer;
+  touch-action: manipulation;
+  padding: 0;
+}
+
+.patient-dashboard .target-circle:hover {
+  background: var(--sage-dark, #2f4a3a);
+}
+
+/* Упражнение: повторение слов */
+
+.speech-task {
+  margin-top: 22px;
+}
+
+.speech-word {
+  padding: 28px 16px;
+  background: var(--bg, #f2f6f1);
+  border: 1px solid var(--line, #d3e0d3);
+  border-radius: 12px;
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.speech-controls {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0;
+}
+
+.speech-controls .patient-button {
+  width: auto;
+  min-width: 220px;
+}
+
+.speech-playback {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.speech-playback audio {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+}
+
+.speech-playback .patient-button {
+  width: auto;
+}
+
+.speech-error {
+  color: var(--warn, #b4572f);
+  font-weight: 600;
+}
+
+/* Упражнение: запоминание последовательности */
+
+.memory-game {
+  margin-top: 22px;
+}
+
+.memory-message {
+  min-height: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  max-width: 520px;
+  margin: 24px auto;
+}
+
+.patient-dashboard .memory-color {
+  min-height: 140px;
+  padding: 12px;
+  border: 4px solid transparent;
+  border-radius: 16px;
+  color: #26362c;
+  font: 700 1.15rem/1.3 Figtree, system-ui, sans-serif;
+  cursor: pointer;
+  transition:
+    filter 0.15s ease,
+    transform 0.15s ease;
+}
+
+.patient-dashboard .memory-color:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.patient-dashboard .memory-color-active {
+  filter: brightness(1.12);
+  transform: scale(1.035);
+  border-color: var(--sage-dark, #2f4a3a);
+  box-shadow: 0 0 0 4px #fff;
+}
+
+/* Упражнение: поиск пар */
+
+.pairs-progress {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  margin: 20px 0;
+}
+
+.pairs-progress p {
+  margin: 0;
+}
+
+.pairs-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  max-width: 700px;
+  margin: 24px auto;
+}
+
+.patient-dashboard .pairs-card {
+  aspect-ratio: 1;
+  min-width: 0;
+  padding: 4px;
+  border: 2px solid var(--line, #d3e0d3);
+  border-radius: 14px;
+  background: var(--sage, #5b8a68);
+  color: #fff;
+  font-size: clamp(1.7rem, 5vw, 3rem);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.patient-dashboard .pairs-card:hover:not(:disabled) {
+  background: var(--sage-dark, #2f4a3a);
+}
+
+.patient-dashboard .pairs-card-open,
+.patient-dashboard .pairs-card-open:hover:not(:disabled) {
+  background: #fff;
+  color: var(--text, #26362c);
+}
+
+.patient-dashboard .pairs-card-matched {
+  background: var(--mist, #e0ebe0);
+  border-color: var(--sage, #5b8a68);
+  color: var(--text, #26362c);
+}
+
+.patient-dashboard .pairs-card:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+/* Дневник самочувствия */
+
+.diary-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 24px 0 32px;
+}
+
+.diary-form > label,
+.diary-fieldset legend {
+  font-weight: 600;
+}
+
+.diary-form input[type="date"],
+.diary-form textarea {
+  display: block;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--line, #d3e0d3);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text, #26362c);
+  font: inherit;
+}
+
+.diary-fieldset {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--line, #d3e0d3);
+  border-radius: 12px;
+}
+
+.diary-mood-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.patient-dashboard .diary-mood-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: auto;
+  min-width: 58px;
+  min-height: 58px;
+  padding: 8px 12px;
+  background: #fff;
+  color: var(--text, #26362c);
+  border: 2px solid var(--line, #d3e0d3);
+  border-radius: 12px;
+  font: 600 1.1rem Figtree, system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.patient-dashboard .diary-mood-option:hover {
+  background: var(--bg, #f2f6f1);
+}
+
+.patient-dashboard .diary-mood-option.selected {
+  border-color: var(--sage, #5b8a68);
+  background: var(--mist, #e0ebe0);
+}
+
+.diary-fatigue-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.diary-fatigue-options label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.patient-dashboard .diary-form input[type="radio"] {
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  accent-color: var(--sage, #5b8a68);
+}
+
+.diary-form .patient-button {
+  width: fit-content;
+  min-width: 200px;
+}
+
+.diary-entries {
+  display: grid;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.diary-entry {
+  padding: 20px;
+  background: #fff;
+  border: 1px solid var(--line, #d3e0d3);
+  border-radius: 16px;
+}
+
+.diary-entry h3 {
+  margin-top: 0;
+}
+
+.diary-entry p {
+  overflow-wrap: anywhere;
+}
+
+/* Графики прогресса */
+
+.patient-chart-section {
+  margin: 24px 0;
+}
+
+.patient-chart {
+  width: 100%;
+  height: 360px;
+  margin-top: 20px;
+  padding: 16px 8px;
+  background: #fff;
+  border: 1px solid var(--line, #d3e0d3);
+  border-radius: 12px;
+}
+
+.patient-chart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px;
+  background: var(--bg, #f2f6f1);
+  border-radius: 12px;
+}
+
+.patient-chart-empty .patient-button {
+  width: auto;
+}
+
+.patient-chart-section table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.patient-chart-section th,
+.patient-chart-section td {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid var(--line, #d3e0d3);
+}
+
+.patient-chart-section th {
+  color: var(--muted, #64756a);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.patient-chart-section select {
+  max-width: 100%;
+}
+
+/* Видеозапись пациента */
+
+.patient-video-section {
+  margin: 24px 0;
+}
+
+.patient-video-preview {
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  max-height: 480px;
+  margin: 20px 0;
+  background: #202820;
+  border-radius: 12px;
+}
+
+.patient-video-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 720px;
+  min-height: 260px;
+  margin: 20px 0;
+  padding: 16px;
+  border: 2px dashed var(--line, #d3e0d3);
+  border-radius: 12px;
+  background: var(--bg, #f2f6f1);
+  color: var(--muted, #64756a);
+  text-align: center;
+}
+
+.patient-video-controls .patient-button {
+  min-width: 170px;
+}
+
+.patient-dashboard .patient-video-secondary {
+  background: var(--mist, #e0ebe0);
+  color: var(--sage-dark, #2f4a3a);
+}
+
+.patient-dashboard .patient-video-secondary:hover:not(:disabled) {
+  background: var(--line, #d3e0d3);
+  color: var(--sage-dark, #2f4a3a);
+}
+
+.patient-video-error {
+  padding: 14px;
+  background: #f5e1d8;
+  color: var(--warn, #b4572f);
+  border-radius: 10px;
+}
+
+/* Планшеты */
+
+@media (min-width: 601px) and (max-width: 899px) {
+  .patient-dashboard .patient-exercises-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Широкие экраны: максимум три карточки в ряд */
+
+@media (min-width: 900px) {
+  .patient-dashboard .patient-exercises-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Мобильные устройства */
+
+@media (max-width: 600px) {
+  .patient-dashboard {
+    padding: 24px 18px 48px;
+  }
+
+  .patient-dashboard .patient-exercises-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .patient-progress,
+  .patient-chart-section,
+  .patient-video-section,
+  .speech-task,
+  .memory-game,
+  .diary-form,
+  .target-result {
+    padding: 16px;
+  }
+
+  .target-area {
+    height: 350px;
+  }
+
+  .memory-grid {
+    gap: 10px;
+  }
+
+  .patient-dashboard .memory-color {
+    min-height: 110px;
+    font-size: 1rem;
+  }
+
+  .pairs-grid {
+    gap: 8px;
+  }
+
+  .patient-dashboard .pairs-card {
+    border-radius: 10px;
+  }
+
+  .target-levels .patient-button,
+  .speech-levels .patient-button,
+  .memory-levels .patient-button,
+  .pairs-levels .patient-button,
+  .memory-result .patient-button,
+  .speech-controls .patient-button,
+  .speech-playback .patient-button,
+  .patient-video-controls .patient-button,
+  .patient-chart-empty .patient-button,
+  .diary-form .patient-button {
+    width: 100%;
+  }
+
+  .patient-dashboard .patient-menu {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+
+  .patient-chart {
+    height: 300px;
+    padding: 12px 0;
+  }
+
+  .patient-video-placeholder {
+    min-height: 200px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .patient-dashboard .patient-button,
+  .patient-dashboard .memory-color {
+    transition: none;
+  }
+}
