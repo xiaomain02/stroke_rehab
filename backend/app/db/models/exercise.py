@@ -5,15 +5,15 @@ from sqlalchemy import (
     JSON,
     Boolean,
     CheckConstraint,
-    DateTime,
     ForeignKey,
     Integer,
     String,
-    func,
+    text,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
+from app.db.types import UTCDateTime, utc_now_sql
 
 if TYPE_CHECKING:
     from app.db.models.assignment import Assignment
@@ -30,7 +30,7 @@ class Exercise(Base):
     category: Mapped[str] = mapped_column(String, nullable=False)
     component_key: Mapped[str] = mapped_column(String, nullable=False)
     default_config: Mapped[dict[str, Any]] = mapped_column(
-        JSON, nullable=False, default=dict
+        JSON, nullable=False, default=dict, server_default=text("'{}'")
     )
     scoring_version: Mapped[str] = mapped_column(
         String, nullable=False, default="v1"
@@ -40,7 +40,7 @@ class Exercise(Base):
     )
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=func.now()
+        UTCDateTime(), nullable=False, server_default=utc_now_sql()
     )
 
     __table_args__ = (
@@ -49,6 +49,9 @@ class Exercise(Base):
         CheckConstraint(
             "category IN ('motor','speech','memory')", name="exercises_category_check"
         ),
+        CheckConstraint("is_active IN (0,1)", name="exercises_active_check"),
+        CheckConstraint("json_valid(default_config)", name="exercises_config_json_check"),
+        CheckConstraint("json_type(default_config) = 'object'", name="exercises_config_object_check"),
     )
 
     assignments: Mapped[list["Assignment"]] = relationship(back_populates="exercise")

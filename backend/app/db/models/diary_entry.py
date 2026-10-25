@@ -3,16 +3,15 @@ from datetime import date, datetime
 from sqlalchemy import (
     CheckConstraint,
     Date,
-    DateTime,
     ForeignKey,
     Integer,
     String,
     UniqueConstraint,
-    func,
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
+from app.db.types import UTCDateTime, utc_now_sql
 
 
 class DiaryEntry(Base):
@@ -28,10 +27,10 @@ class DiaryEntry(Base):
     fatigue: Mapped[int | None] = mapped_column(Integer, nullable=True)
     note: Mapped[str | None] = mapped_column(String, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=func.now()
+        UTCDateTime(), nullable=False, server_default=utc_now_sql()
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=func.now()
+        UTCDateTime(), nullable=False, server_default=utc_now_sql()
     )
 
     __table_args__ = (
@@ -43,5 +42,5 @@ class DiaryEntry(Base):
             "fatigue IS NULL OR fatigue BETWEEN 0 AND 10",
             name="diary_fatigue_check",
         ),
-        UniqueConstraint("patient_id", "entry_date", name="diary_patient_date_unique"),
+        UniqueConstraint("patient_id", "entry_date"),
     )

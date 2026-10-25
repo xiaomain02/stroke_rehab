@@ -3,16 +3,15 @@ from typing import TYPE_CHECKING
 
 from sqlalchemy import (
     CheckConstraint,
-    DateTime,
     ForeignKey,
     Index,
     Integer,
-    func,
     text,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
+from app.db.types import UTCDateTime, utc_now_sql
 
 if TYPE_CHECKING:
     from app.db.models.assignment import Assignment
@@ -30,10 +29,10 @@ class DoctorPatient(Base):
         Integer, ForeignKey("patient_profiles.user_id"), nullable=False
     )
     started_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=func.now()
+        UTCDateTime(), nullable=False, server_default=utc_now_sql()
     )
     ended_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True), nullable=True
+        UTCDateTime(), nullable=True
     )
 
     __table_args__ = (

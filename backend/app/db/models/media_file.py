@@ -3,17 +3,16 @@ from typing import TYPE_CHECKING
 
 from sqlalchemy import (
     CheckConstraint,
-    DateTime,
     ForeignKey,
     Index,
     Integer,
     String,
-    func,
     text,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
+from app.db.types import UTCDateTime, utc_now_sql
 
 if TYPE_CHECKING:
     from app.db.models.attempt import Attempt
@@ -42,7 +41,7 @@ class MediaFile(Base):
     duration_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
     status: Mapped[str] = mapped_column(String, nullable=False, default="pending")
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=func.now()
+        UTCDateTime(), nullable=False, server_default=utc_now_sql()
     )
 
     __table_args__ = (

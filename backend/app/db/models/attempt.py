@@ -5,18 +5,17 @@ from typing import TYPE_CHECKING, Any
 from sqlalchemy import (
     JSON,
     CheckConstraint,
-    DateTime,
     ForeignKey,
     Index,
     Integer,
     Numeric,
     String,
-    func,
     text,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
+from app.db.types import UTCDateTime, utc_now_sql
 
 if TYPE_CHECKING:
     from app.db.models.assignment import Assignment
@@ -34,16 +33,16 @@ class Attempt(Base):
         String(36), nullable=False, unique=True
     )
     started_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False
+        UTCDateTime(), nullable=False
     )
     completed_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False
+        UTCDateTime(), nullable=False
     )
     duration_ms: Mapped[int] = mapped_column(Integer, nullable=False)
     auto_score: Mapped[Decimal | None] = mapped_column(Numeric, nullable=True)
     doctor_score: Mapped[Decimal | None] = mapped_column(Numeric, nullable=True)
     raw_result: Mapped[dict[str, Any]] = mapped_column(
-        JSON, nullable=False, default=dict
+        JSON, nullable=False, default=dict, server_default=text("'{}'")
     )
     patient_comment: Mapped[str | None] = mapped_column(String, nullable=True)
     doctor_feedback: Mapped[str | None] = mapped_column(String, nullable=True)
@@ -51,14 +50,17 @@ class Attempt(Base):
         Integer, ForeignKey("doctor_profiles.user_id"), nullable=True
     )
     reviewed_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True), nullable=True
+        UTCDateTime(), nullable=True
     )
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=func.now()
+        UTCDateTime(), nullable=False, server_default=utc_now_sql()
     )
 
     __table_args__ = (
         CheckConstraint("duration_ms >= 0", name="attempts_duration_check"),
+        CheckConstraint("length(submission_key) = 36", name="attempts_submission_key_check"),
+        CheckConstraint("json_valid(raw_result)", name="attempts_result_json_check"),
+        CheckConstraint("json_type(raw_result) = 'object'", name="attempts_result_object_check"),
         CheckConstraint(
             "auto_score IS NULL OR auto_score BETWEEN 0 AND 100",
             name="attempts_auto_score_check",

@@ -5,16 +5,15 @@ from sqlalchemy import (
     JSON,
     CheckConstraint,
     Date,
-    DateTime,
     ForeignKey,
     Index,
     Integer,
     String,
-    func,
 )
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship as orm_relationship
 
 from app.db.base import Base
+from app.db.types import UTCDateTime, utc_now_sql
 
 if TYPE_CHECKING:
     from app.db.models.attempt import Attempt
@@ -40,7 +39,7 @@ class Assignment(Base):
     config_snapshot: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False)
     scoring_version: Mapped[str] = mapped_column(String, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=func.now()
+        UTCDateTime(), nullable=False, server_default=utc_now_sql()
     )
 
     __table_args__ = (
@@ -50,10 +49,12 @@ class Assignment(Base):
             name="assignments_status_check",
         ),
         CheckConstraint("ends_on >= starts_on", name="assignments_period_check"),
+        CheckConstraint("json_valid(config_snapshot)", name="assignments_config_json_check"),
+        CheckConstraint("json_type(config_snapshot) = 'object'", name="assignments_config_object_check"),
         Index("assignments_relationship_idx", "doctor_patient_id", "status"),
         Index("assignments_exercise_idx", "exercise_id"),
     )
 
-    relationship: Mapped["DoctorPatient"] = relationship(back_populates="assignments")
-    exercise: Mapped["Exercise"] = relationship(back_populates="assignments")
-    attempts: Mapped[list["Attempt"]] = relationship(back_populates="assignment")
+    relationship: Mapped["DoctorPatient"] = orm_relationship(back_populates="assignments")
+    exercise: Mapped["Exercise"] = orm_relationship(back_populates="assignments")
+    attempts: Mapped[list["Attempt"]] = orm_relationship(back_populates="assignment")

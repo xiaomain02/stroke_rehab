@@ -132,8 +132,28 @@ CREATE TABLE diary_entries (
 );
 
 CREATE TRIGGER diary_entries_touch_updated_at
-AFTER UPDATE ON diary_entries
+AFTER UPDATE OF entry_date, wellbeing, mood, fatigue, note ON diary_entries
 FOR EACH ROW
 BEGIN
     UPDATE diary_entries
        SET updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now')
+     WHERE id = NEW.id;
+END;
+
+CREATE VIEW attempt_results AS
+SELECT
+    t.id AS attempt_id,
+    t.assignment_id,
+    dp.patient_id,
+    dp.doctor_id AS assigned_by,
+    a.exercise_id,
+    a.scoring_version,
+    a.config_snapshot,
+    t.completed_at,
+    t.duration_ms,
+    t.auto_score,
+    t.doctor_score,
+    coalesce(t.doctor_score, t.auto_score) AS effective_score
+FROM attempts t
+JOIN assignments a ON a.id = t.assignment_id
+JOIN doctor_patients dp ON dp.id = a.doctor_patient_id;

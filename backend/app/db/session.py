@@ -1,6 +1,8 @@
 from collections.abc import AsyncIterator
+from pathlib import Path
 
 from sqlalchemy import event
+from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
@@ -10,6 +12,7 @@ from sqlalchemy.ext.asyncio import (
 from app.config import get_settings
 
 settings = get_settings()
+Path(make_url(settings.DATABASE_URL).database).parent.mkdir(parents=True, exist_ok=True)
 
 engine = create_async_engine(
     settings.DATABASE_URL,

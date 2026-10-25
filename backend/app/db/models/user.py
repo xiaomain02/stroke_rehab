@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 from sqlalchemy import (
     Boolean,
     CheckConstraint,
-    DateTime,
     Integer,
+    Index,
     String,
     UniqueConstraint,
     func,
@@ -14,6 +14,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
+from app.db.types import UTCDateTime, utc_now_sql
 
 if TYPE_CHECKING:
     from app.db.models.media_file import MediaFile
@@ -30,13 +31,15 @@ class User(Base):
     role: Mapped[str] = mapped_column(String, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, server_default=func.now()
+        UTCDateTime(), nullable=False, server_default=utc_now_sql()
     )
 
     __table_args__ = (
-        UniqueConstraint("id", "role", name="users_id_role_unique"),
+        UniqueConstraint("id", "role"),
         CheckConstraint("length(trim(full_name)) > 0", name="users_full_name_check"),
         CheckConstraint("role IN ('patient','doctor')", name="users_role_check"),
+        CheckConstraint("is_active IN (0,1)", name="users_active_check"),
+        Index("users_email_unique", func.lower(email), unique=True),
     )
 
     doctor_profile: Mapped["DoctorProfile | None"] = relationship(
