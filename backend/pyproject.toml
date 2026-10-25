@@ -1,0 +1,32 @@
+[project]
+name = "stroke-rehab-backend"
+version = "0.1.0"
+description = "Backend for stroke rehab web app"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.29",
+    "sqlalchemy>=2.0",
+    "aiosqlite>=0.19",
+    "alembic>=1.13",
+    "pydantic>=2.6",
+    "pydantic-settings>=2.2",
+    "python-multipart>=0.0.9",
+    "aiofiles>=23.2",
+    "passlib[bcrypt]>=1.7",
+    "bcrypt<4.1",
+    "python-jose[cryptography]>=3.3",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-asyncio", "httpx"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*", "scripts*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
