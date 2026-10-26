@@ -68,3 +68,16 @@ VITE_MOCK=false
 
 Vite prints the frontend URL in the terminal, usually `http://localhost:5173`. Keep both terminals running.
 For mock mode, set `VITE_MOCK=true`; the frontend then uses sample data and does not need the backend.
+
+# stroke rehab
+
+## Как делать миграции
+
+```bash
+cd backend
+source .venv/bin/activate
+python -m alembic upgrade head
+python -m alembic revision --autogenerate -m "describe schema change"
+python -m alembic upgrade head
+python -m alembic check
+```
